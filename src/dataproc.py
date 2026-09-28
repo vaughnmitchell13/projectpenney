@@ -121,11 +121,11 @@ def simulate(n_decks: int = 1000000, n_cards: int = 52, seed: int=None):
     Returns: 
         - result (DataFame): A Pandas dataframe of the results 
     '''
-    PATH_RESULTS = Path('../data/processed/')
+    PATH_RESULTS = Path('./data/processed/')
     PATH_RESULTS.mkdir(parents=True,exist_ok=True)
     results = assemble_df()
-    decks, seeds = generate_shuffled_decks(n_decks=n_decks,n_cards=n_cards,base_seed=seed)
-    save_decks(decks,seeds)
+    decks, seed= generate_shuffled_decks(n_decks=n_decks,n_cards=n_cards,seed=seed)
+    save_decks(decks,seed)
 
     t0 = dt.now()
     for a in A_SEQUENCES:
@@ -157,12 +157,12 @@ def simulate(n_decks: int = 1000000, n_cards: int = 52, seed: int=None):
             print(f"Simulated {a} vs {b} with {n_decks} decks")
     duration = dt.now()-t0
     print(f"Simulation done. Elapsed: {duration}")
-    filename = PATH_RESULTS/f'results_{n_decks}x{n_cards}_startingseed_{seeds[0]}.csv'
+    filename = PATH_RESULTS/f'results_{n_decks}x{n_cards}_startingseed_{seed}.csv'
     results.to_csv(filename)
     return results
 
 if __name__=="__main__":
-    simulate(1_000_000,52,440)
+    simulate(1000,52,440)
     
      
      
