@@ -4,7 +4,7 @@ import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
 
-num_sims = 20
+num_sims = 10000
 
 # generate game results
 results_test = simulate(n_decks = num_sims)
@@ -22,12 +22,12 @@ def get_heatmap(results = None, by_tricks = True):
     # what we want to create: 8x8 matrix containing strictly win a_wins_tricks or a_wins_cards over total
     win_pcts = pd.DataFrame(np.zeros((8, 8)))
     map_labels = pd.DataFrame(np.zeros((8, 8)))
-    vers_col = 2
+    vers_col = 4
     vers_str = 'Cards'
     if by_tricks:
-        vers_col = 0
+        vers_col = 1
         vers_str = 'Tricks' # set to score by tricks or cards
-    num_sims = results.iloc[0, 0] + results.iloc[0, 1] + results.iloc[0, 4]
+    num_sims = results.iloc[0, 0] + results.iloc[0, 1] + results.iloc[0, 2]
 
     curr_result = 0
     for i in range(8):
@@ -43,10 +43,8 @@ def get_heatmap(results = None, by_tricks = True):
                 pct = row.iloc[vers_col] / num_sims
                 win_pcts.iloc[i, j] = round(pct * 100)
                 curr_result += 1
-                # formula where 0 => 4 and 2 => 5 is x/2 + 4
-                map_labels.iloc[i, j] = f'{round(pct * 100)} ({round((row.iloc[vers_col//2 + 4] / num_sims) * 100)})'
+                map_labels.iloc[i, j] = f'{round(pct * 100)} ({round((row.iloc[vers_col + 1] / num_sims) * 100)})'
 
-    print(map_labels)
     ax = sns.heatmap(
         data = win_pcts, vmin = 0, vmax = 100,
         cmap = 'Blues',
@@ -64,5 +62,13 @@ def get_heatmap(results = None, by_tricks = True):
 
     plt.show()
 
-get_heatmap(results_test)
-        
+def save_heatmap(results = None, by_tricks = True):
+    # save heatmap to file
+    get_heatmap(results, by_tricks)
+    plt.savefig(f'./data/heatmaps/heatmap_by_{"tricks" if by_tricks else "cards"}.png', dpi=300)
+
+
+if __name__ == "__main__":
+    results = simulate(1000,52,440)
+    save_heatmap(results, True)
+    save_heatmap(results, False)
