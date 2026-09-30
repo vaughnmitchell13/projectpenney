@@ -4,10 +4,7 @@ import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
 
-num_sims = 10000
-
-# generate game results
-results_test = simulate(n_decks = num_sims)
+num_sims = 100_000
 
 seq_labels = np.array(['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR'])
 
@@ -60,15 +57,13 @@ def get_heatmap(results = None, by_tricks = True):
     plt.ylabel('Opponent Choice')
     plt.title(f'My Probability of Win (Tie) \nScoring by {vers_str}\nN = {num_sims}')
 
-    plt.show()
-
-def save_heatmap(results = None, by_tricks = True):
-    # save heatmap to file
-    get_heatmap(results, by_tricks)
     plt.savefig(f'./data/heatmaps/heatmap_by_{"tricks" if by_tricks else "cards"}.png', dpi=300)
+
+    plt.show()
 
 
 if __name__ == "__main__":
-    results = simulate(1000,52,440)
-    save_heatmap(results, True)
-    save_heatmap(results, False)
+    results = simulate(100_000,52,440)
+    get_heatmap(results, True)
+    plt.close()
+    get_heatmap(results, False)
