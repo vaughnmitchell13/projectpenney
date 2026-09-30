@@ -39,25 +39,23 @@ def get_score(sequence_A:np.ndarray, sequence_B: np.ndarray, deck:np.ndarray) ->
     cards_B = 0
     seq_length = len(sequence_A)
     start = 0
-    i = 0
 
-    while i <= len(deck) - seq_length:
-        current = deck[i:i+seq_length]
-        if np.array_equal(sequence_A,current):
-            tricks_A += 1
-            cards_won = i+seq_length-start
-            cards_A += cards_won
-            start = i+seq_length
-            i=start
-            continue
-        elif np.array_equal(sequence_B,current):
+    while True:
+        index_A = deck.find(sequence_A, start)
+        index_B = deck.find(sequence_B,start)
+        if index_A == -1 and index_B == -1:
+            break
+
+        if index_A != -1 and (index_B == -1 or index_A <= index_B):
+            end = index_A + seq_length
+            tricks_A +=1
+            cards_A += end-start
+        else:
+            end = index_B + seq_length
             tricks_B += 1
-            cards_won = i+seq_length-start
-            cards_B += cards_won
-            start = i+seq_length
-            i=start
-            continue
-        i+=1
+            cards_B += end-start
+        start=end
+
     return tricks_A,cards_A,tricks_B,cards_B
 
 
@@ -124,12 +122,15 @@ def simulate(n_decks: int = 1000000, n_cards: int = 52, seed: int=None):
     PATH_RESULTS = Path('./data/processed/')
     PATH_RESULTS.mkdir(parents=True,exist_ok=True)
     results = assemble_df()
-    decks, seed= generate_shuffled_decks(n_decks=n_decks,n_cards=n_cards,seed=seed)
+    decks, seed = generate_shuffled_decks(n_decks=n_decks,n_cards=n_cards,seed=seed)
     save_decks(decks,seed)
+    decks = ["".join(deck) for deck in decks]
+    a_sequences = ["".join(a) for a in A_SEQUENCES]
+    b_sequences = ["".join(b) for b in B_SEQUENCES]
 
     t0 = dt.now()
-    for a in A_SEQUENCES:
-        for b in B_SEQUENCES:
+    for a in a_sequences:
+        for b in b_sequences:
             if np.array_equal(a,b):
                 continue
             A_WINS_TRICKS = 0
@@ -162,7 +163,7 @@ def simulate(n_decks: int = 1000000, n_cards: int = 52, seed: int=None):
     return results
 
 if __name__=="__main__":
-    simulate(1000,52,440)
+    simulate(1_000_000,52,442)
     
      
      
