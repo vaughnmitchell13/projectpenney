@@ -1,24 +1,23 @@
-from datagen import *
-from dataproc import *
+from .datagen import *
+from .dataproc import *
 import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
 
-num_sims = 100_000
-
-seq_labels = np.array(['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR'])
-
-# generate heat map
-def get_heatmap(results = None, by_tricks = True):
-    # results from simulate
-    # by_tricks is true for scoring by tricks won, false for scoring by cards won
-    
-    # convert results to the data format we need
-    # currently results returns a_wins_tricks, b_wins_tricks, a_wins_cards, b_wins_cards, ties_tricks, ties_cards
-    # heatmap based on a_wins_tricks or a_wins_cards as a percentage of total sum
-    # what we want to create: 8x8 matrix containing strictly win a_wins_tricks or a_wins_cards over total
+def get_heatmap(results: pd.DataFrame = None, by_tricks: bool = True) -> None:
+    """
+    Creates the heatmaps for the simulation's results by tricks and by score.
+    Arguments: 
+        - results (DataFrame): The results of a simulation
+        - by_tricks (bool): Flag to generate based on tricks
+    Returns:
+        - None
+    """
+    PATH_HM = Path('./figures')
+    PATH_HM.mkdir(parents=True,exist_ok=True)
+    SEQ_LABELS = np.array(['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR'])
     win_pcts = pd.DataFrame(np.zeros((8, 8)))
-    map_labels = pd.DataFrame(np.zeros((8, 8)))
+    map_labels = pd.DataFrame("",index=range(8), columns=range(8))
     vers_col = 4
     vers_str = 'Cards'
     if by_tricks:
@@ -38,15 +37,15 @@ def get_heatmap(results = None, by_tricks = True):
                 # place percentage in win_pcts
                 row = results.iloc[curr_result]
                 pct = row.iloc[vers_col] / num_sims
-                win_pcts.iloc[i, j] = round(pct * 100)
+                win_pcts.iloc[i, j] = round(pct * 100,2)
                 curr_result += 1
-                map_labels.iloc[i, j] = f'{round(pct * 100)} ({round((row.iloc[vers_col + 1] / num_sims) * 100)})'
-
+                map_labels.iloc[i, j] = f'{round(pct * 100)}\n({round((row.iloc[vers_col + 1] / num_sims) * 100)})'
+    plt.figure(figsize=(10,8))
     ax = sns.heatmap(
         data = win_pcts, vmin = 0, vmax = 100,
         cmap = 'Blues',
-        xticklabels = seq_labels,
-        yticklabels = seq_labels,
+        xticklabels = SEQ_LABELS,
+        yticklabels = SEQ_LABELS,
         annot = map_labels,
         fmt = '',
         linewidths = 1,
@@ -56,14 +55,10 @@ def get_heatmap(results = None, by_tricks = True):
     plt.xlabel('My Choice')
     plt.ylabel('Opponent Choice')
     plt.title(f'My Probability of Win (Tie) \nScoring by {vers_str}\nN = {num_sims}')
-
-    plt.savefig(f'./data/heatmaps/heatmap_by_{"tricks" if by_tricks else "cards"}.png', dpi=300)
+    filename = PATH_HM/f'heatmap_n_{num_sims}_by_{"tricks" if by_tricks else "cards"}.png'
+    plt.savefig(filename, dpi=300)
 
     plt.show()
+    return
 
 
-if __name__ == "__main__":
-    results = simulate(100_000,52,440)
-    get_heatmap(results, True)
-    plt.close()
-    get_heatmap(results, False)

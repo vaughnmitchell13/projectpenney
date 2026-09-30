@@ -1,26 +1,19 @@
 import numpy as np
 from pathlib import Path
 import pandas as pd
-from datagen import generate_shuffled_decks, save_decks
+from .datagen import generate_shuffled_decks, save_decks
 from datetime import datetime as dt
 
-A_SEQUENCES = np.array([['B','B','B'],
-                        ['B','B','R'],
-                        ['B','R','B'],
-                        ['B','R','R'],
-                        ['R','B','B'],
-                        ['R','B','R'],
-                        ['R','R','B'],
-                        ['R','R','R']])
+A_SEQUENCES = B_SEQUENCES =  np.array(['BBB',
+                                       'BBR',
+                                       'BRB',
+                                       'BRR',
+                                       'RBB',
+                                       'RBR',
+                                       'RRB',
+                                       'RRR'])
 
-B_SEQUENCES = np.array([['B','B','B'],
-                        ['B','B','R'],
-                        ['B','R','B'],
-                        ['B','R','R'],
-                        ['R','B','B'],
-                        ['R','B','R'],
-                        ['R','R','B'],
-                        ['R','R','R']])
+
 
 def get_score(sequence_A:np.ndarray, sequence_B: np.ndarray, deck:np.ndarray) -> tuple:
     '''
@@ -97,9 +90,9 @@ def assemble_df() -> pd.DataFrame:
     match_sequences = []
     for a in A_SEQUENCES:
         for b in B_SEQUENCES:
-            if np.array_equal(a,b):
+            if a==b:
                 continue
-            match_sequences.append((tuple(a),tuple(b)))
+            match_sequences.append((a,b))
     idx = pd.MultiIndex.from_tuples(match_sequences, names=['A','B'])
     frame = pd.DataFrame(0,index=idx,columns=['A Wins by Tricks',
                                               'B Wins by Tricks',
@@ -119,19 +112,17 @@ def simulate(n_decks: int = 1000000, n_cards: int = 52, seed: int=None):
     Returns: 
         - result (DataFame): A Pandas dataframe of the results 
     '''
-    PATH_RESULTS = Path('./data/processed/')
-    PATH_RESULTS.mkdir(parents=True,exist_ok=True)
+    PATH_PROCESSED = Path('../data/processed/')
+    PATH_PROCESSED.mkdir(parents=True,exist_ok=True)
     results = assemble_df()
     decks, seed = generate_shuffled_decks(n_decks=n_decks,n_cards=n_cards,seed=seed)
     save_decks(decks,seed)
     decks = ["".join(deck) for deck in decks]
-    a_sequences = ["".join(a) for a in A_SEQUENCES]
-    b_sequences = ["".join(b) for b in B_SEQUENCES]
 
     t0 = dt.now()
-    for a in a_sequences:
-        for b in b_sequences:
-            if np.array_equal(a,b):
+    for a in A_SEQUENCES:
+        for b in B_SEQUENCES:
+            if a==b:
                 continue
             A_WINS_TRICKS = 0
             A_WINS_CARDS = 0
@@ -149,21 +140,19 @@ def simulate(n_decks: int = 1000000, n_cards: int = 52, seed: int=None):
                     TIES_CARDS+=1
             B_WINS_TRICKS = n_decks-A_WINS_TRICKS-TIES_TRICKS
             B_WINS_CARDS = n_decks-A_WINS_CARDS-TIES_CARDS
-            results.loc[(tuple(a),tuple(b)),:] = [A_WINS_TRICKS,
-                                                B_WINS_TRICKS,
-                                                TIES_TRICKS,
-                                                A_WINS_CARDS,
-                                                B_WINS_CARDS,
-                                                TIES_CARDS]
+            results.loc[(a,b),:] = [A_WINS_TRICKS,
+                                    B_WINS_TRICKS,
+                                    TIES_TRICKS,
+                                    A_WINS_CARDS,
+                                    B_WINS_CARDS,
+                                    TIES_CARDS]
             print(f"Simulated {a} vs {b} with {n_decks} decks")
     duration = dt.now()-t0
     print(f"Simulation done. Elapsed: {duration}")
-    filename = PATH_RESULTS/f'results_{n_decks}x{n_cards}_startingseed_{seed}.csv'
+    filename = PATH_PROCESSED/f'results_{n_decks}x{n_cards}_seed{seed}.csv'
     results.to_csv(filename)
     return results
 
-if __name__=="__main__":
-    simulate(1_000_000,52,442)
     
      
      
