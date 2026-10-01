@@ -26,6 +26,12 @@ The purpose of this Monte Carlo simulation is to understand how simulated probab
 \
 The strategy for Player B is summarized like this: "take the opposite of Player A's second card, and tag on Player A's two cards as-is to your sequence."
 
+## Findings
+In our heatmaps, we found that for tiles where the theorized strategy applies, the second player had the highest probability of winning by both tricks and scores. For instance, when the opponent selected 'RRR' and we selected 'BRR', the simulation carried a 99% chance of victory by tricks and a 100% chance of victory by cards (percents were rounded). Similarly, when an opponent chose 'BBB' and we chose 'RBB', the simulation also carried a 99% chance of victory by tricks and an 100% chance of victory by cards. We believe the strategy works because if Player A's second card does not hit, then Player B's first card will if they choose the optimal strategy [above](#strategy-and-purpose). Player B can basically "steal" Player A's sequence. 
+
+What we found interesting was that for matchups where a player chooses the same color for their whole sequence ('RRR' vs. 'BBB'), the tie rate for games scored by cards was 3% while the tie rate for games scored by tricks was 35%. We are not sure why this is, but scoring by cards might be more sensitive to determine a winner after an entire deck is dealt. In other words, a player can win one trick and accumulate tons of cards.
+
+If you look at the simulated matchup win probabilities in the table above and cross-reference with the tiles in our heatmap, you'll find that the numbers are almost one-to-one. Even though the baseline simulation uses 1,000,000 decks, you can try the simulation with even more decks and create a heatmap of the results for yourself. 
 
 ## Repository Guidance
 - `src/datagen.py`: Handles data generation and storage
