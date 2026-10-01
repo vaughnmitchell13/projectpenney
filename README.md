@@ -24,7 +24,7 @@ The purpose of this Monte Carlo simulation is to understand how simulated probab
 |RRR|BRR|0.11%|99.49%|0.40%|
 
 \
-The strategy for Player B is summarized like this: "take the opposite of Player A's second card, and tag on Player A's two cards as-is to your sequence."
+The strategy for Player B is summarized like this: "take the opposite of Player A's second card, and tag on Player A's first two cards as-is to your sequence."
 
 ## Findings
 In our heatmaps, we found that for tiles where the theorized strategy applies, the second player had the highest probability of winning by both tricks and scores. For instance, when the opponent selected 'RRR' and we selected 'BRR', the simulation carried a 99% chance of victory by tricks and a 100% chance of victory by cards (percents were rounded). Similarly, when an opponent chose 'BBB' and we chose 'RBB', the simulation also carried a 99% chance of victory by tricks and an 100% chance of victory by cards. We believe the strategy works because if Player A's second card does not hit, then Player B's first card will if they choose the optimal strategy [above](#strategy-and-purpose). Player B can basically "steal" Player A's sequence. 
