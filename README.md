@@ -65,14 +65,18 @@ XOO, OOO: consecutive Os create an inevitability for Player 2, so Player 2 wins.
 XOX: this is Player 1's sequence, so Player 1 wins.
 OOX: this is Player 2's sequence, so Player 2 wins.
 There are three scenarios where Player 2 wins, one where Player 1 wins, and four 50/50s, so Player 2 has a 5 in 8 chance of winning. Player 1 has to overcome these odds repeatedly in order to win, which is fairly unlikely.
+
 We will analyze the second counter-play option the way we did before.
 Counter 2: XXO
 In the fourth scenario's second counter, XXO, neither sequence can begin until the first X appears, so the rally does not functionally begin until this occurs. Once this X occurs, a second X will create an inevitability for Player 2. If the sequence starts XOX, Player 1 will win, but if it starts XOO, we are back in our initial stalemate situation, where neither sequence has made progress. Among the combination of cards that produce a result, two of them (XXX and XXO) result in a win for Player 2, and one of them (XOX) results in a win for Player 1. Player 2 therefore has roughly a 2 in 3 chance of winning each rally. Player 1 has to overcome these odds repeatedly in order to win, which is also fairly unlikely.
 
 Questions you may still ponder after these explanations:
 1) Why are the odds expressed "roughly" and not precisely?
+   
    These games are not drawn from an infinite deck, but from a 52 card deck. The odds will slowly shift as imbalances between red cards and black cards are established.
+   
 2) Why are the odds across one million simulations roughly the same for OOX and XXO against XOX, despite one sequence having a 5 in 8 chance of winning and the other having a superior 2 in 3 chance of winning?
+
    This result may initially appear surprising, as in a one-shot round of this game, XXO is more likely to beat XOX than OOX. However, a long sequence of Xs or an XOX sequence drain the deck of Xs, which leaves more Os relatively. OOX has an advantage with more Os in the deck, since two consecutive Os make its victory inevitable. Using similar circumstances, deck drainage tends to favor the side with more win conditions.
 
 
