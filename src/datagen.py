@@ -39,7 +39,7 @@ def save_decks(decks:np.ndarray, seed: int) -> Path:
         - filename (Path): The path of the file the saved decks exist at 
 
     '''
-    PATH_DECKS = Path('../data/decks/')
+    PATH_DECKS = Path('./data/decks/')
     PATH_DECKS.mkdir(parents=True,exist_ok=True)
 
     n_decks = decks.shape[0] # (decks, cards)

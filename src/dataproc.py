@@ -120,7 +120,7 @@ def simulate(n_decks: int = 1000000, n_cards: int = 52, seed: int=None):
     Returns: 
         - result (DataFame): A Pandas dataframe of the results 
     '''
-    PATH_PROCESSED = Path('../data/processed/')
+    PATH_PROCESSED = Path('./data/processed/')
     PATH_PROCESSED.mkdir(parents=True,exist_ok=True)
     results = assemble_df() # Skeleton dataframe prepared for the data
     decks, seed = generate_shuffled_decks(n_decks=n_decks,n_cards=n_cards,seed=seed) # Create decks and the seed 
